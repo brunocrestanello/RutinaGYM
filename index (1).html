@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rutina Bruno 💪</title>
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Rutina Bruno" />
+  <link rel="manifest" href="manifest.json" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #2a2a2a;
+      --accent: #d4ff00;
+      --accent2: #ff6b35;
+      --text: #f0f0f0;
+      --muted: #666;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100dvh;
+      padding-bottom: 80px;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--bg);
+      padding: 20px 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    .logo span { color: var(--accent); }
+
+    .week-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .week-badge strong { color: var(--text); }
+
+    /* DAY TABS */
+    .day-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .day-tabs::-webkit-scrollbar { display: none; }
+
+    .day-tab {
+      flex-shrink: 0;
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .day-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+
+    /* CONTENT */
+    .content { padding: 16px; }
+
+    .day-header {
+      margin-bottom: 20px;
+    }
+    .day-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      letter-spacing: 3px;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .day-subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+    /* SUPERSET GROUP */
+    .superset-group {
+      margin-bottom: 16px;
+    }
+    .superset-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .superset-badge {
+      background: var(--accent2);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+    .superset-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* EXERCISE CARD */
+    .exercise-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .exercise-card.expanded { border-color: #333; }
+
+    .exercise-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      cursor: pointer;
+    }
+
+    .order-badge {
+      background: var(--surface2);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .exercise-info { flex: 1; min-width: 0; }
+    .exercise-name {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .exercise-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .meta-chip.reps { color: var(--accent); }
+    .meta-chip.rir { color: #888; }
+    .meta-chip.peso { color: #aaa; }
+
+    .expand-btn {
+      color: var(--muted);
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .exercise-card.expanded .expand-btn { transform: rotate(180deg); }
+
+    /* EXERCISE BODY */
+    .exercise-body {
+      display: none;
+      padding: 0 14px 14px;
+      border-top: 1px solid var(--border);
+    }
+    .exercise-card.expanded .exercise-body { display: block; }
+
+    .notes-box {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.5;
+      margin: 12px 0;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+      margin-bottom: 14px;
+    }
+    .link-btn:hover { border-color: #ff0000; color: #ff4444; }
+
+    /* LOG SECTION */
+    .log-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .series-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .serie-slot {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .serie-slot label {
+      font-size: 10px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .serie-slot input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+    .serie-slot input::placeholder { color: #333; }
+
+    .save-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s;
+    }
+    .save-btn:active { opacity: 0.8; }
+    .save-btn.saved { background: #333; color: var(--accent); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      z-index: 200;
+    }
+    .nav-btn {
+      flex: 1;
+      padding: 12px 8px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .nav-btn svg { width: 22px; height: 22px; }
+    .nav-btn.active { color: var(--accent); }
+
+    /* HISTORY VIEW */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .history-header {
+      padding: 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+
+    .week-group {
+      margin: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .week-group-header {
+      padding: 12px 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .week-group-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    .week-group-count {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .history-entry {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-entry:last-child { border-bottom: none; }
+    .history-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .history-exercise-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .history-date {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .history-stats {
+      display: flex;
+      gap: 10px;
+    }
+    .history-stat {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .history-stat span { color: var(--text); font-weight: 600; }
+
+    .empty-history {
+      padding: 60px 16px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-history .icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-history p { font-size: 14px; }
+
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--accent);
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 300;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* RIR INFO */
+    .rir-info-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+    .rir-info-banner p {
+      font-size: 12px;
+      color: #999;
+      line-height: 1.6;
+    }
+    .rir-info-banner strong { color: var(--accent); }
+
+    .delete-week-btn {
+      background: transparent;
+      border: 1px solid #333;
+      color: #555;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .delete-week-btn:hover { border-color: #ff4444; color: #ff4444; }
+
+    .series-row {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr 1fr;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .series-label {
+      font-size: 11px;
+      color: var(--muted);
+      width: 20px;
+      text-align: center;
+    }
+    .series-input-wrap {
+      position: relative;
+    }
+    .series-input-unit {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .series-headers {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .series-headers span {
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .series-headers span:first-child { width: 20px; }
+
+    .add-serie-btn {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+    .add-serie-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* STATS VIEW */
+    .stats-container { padding: 16px; }
+    .stats-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      padding: 20px 16px 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .stat-card-title { font-size: 12px; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.5px; }
+    .stat-card-value { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--accent); letter-spacing: 2px; }
+    .stat-card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+    .progress-bar-wrap { margin-top: 12px; }
+    .progress-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .progress-bar-track { background: var(--surface2); border-radius: 4px; height: 6px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.5s ease; }
+  </style>
+</head>
+<body>
+
+<div id="view-routine" class="view active">
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">RUTINA<br /><span>BRUNO</span></div>
+      <div class="week-badge" id="week-badge">Cargando...</div>
+    </div>
+    <div class="day-tabs" id="day-tabs"></div>
+  </div>
+  <div class="content" id="routine-content"></div>
+</div>
+
+<div id="view-history" class="view">
+  <div class="history-header">
+    <div class="history-title">HISTORIAL</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:4px">Registro semanal de tus entrenamientos</div>
+  </div>
+  <div id="history-content"></div>
+</div>
+
+<div id="view-stats" class="view">
+  <div class="stats-title">ESTADÍSTICAS</div>
+  <div class="stats-container" id="stats-content"></div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchView('routine', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+    RUTINA
+  </button>
+  <button class="nav-btn" onclick="switchView('history', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    HISTORIAL
+  </button>
+  <button class="nav-btn" onclick="switchView('stats', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    STATS
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// DATA: RUTINA BRUNO
+// ============================================================
+const ROUTINE = [
+  {
+    id: 'dia1',
+    label: 'DÍA 1',
+    groups: [
+      {
+        supersetId: '1',
+        exercises: [
+          { id: 'd1_1a', order: '1A)', name: 'Sentadilla + Gemelos', series: '3X6/8', rir: null, pesoRef: '15 kg', notas: 'Aunque sea con poco peso, enfocate en hacer bien la técnica. Ponete algo de tope abajo para bajar bien y tocar.', link: 'https://www.youtube.com/watch?v=j-KDHkRMer0' },
+          { id: 'd1_1b', order: '1B)', name: 'Abdominales en Banco Declinado', series: '3X10/12', rir: null, pesoRef: 'Peso corporal', notas: null, link: null },
+        ]
+      },
+      {
+        supersetId: '2',
+        exercises: [
+          { id: 'd1_2a', order: '2A)', name: 'Press Inclinado c/ Mancuernas', series: '3X8-12', rir: 'RIR 2', pesoRef: '22 kg c/manc', notas: null, link: 'https://www.youtube.com/watch?v=PAd6ezGbDUQ' },
+          { id: 'd1_2b', order: '2B)', name: 'Remo en Polea Agarre Cerrado', series: '3X10-12', rir: 'RIR 2', pesoRef: '30 kg', notas: null, link: null },
+        ]
+      },
+      {
+        supersetId: '3',
+        exercises: [
+          { id: 'd1_3a', order: '3A)', name: 'Vuelos Laterales', series: '3X12-15', rir: 'RIR 1-0', pesoRef: '12 kg', notas: null, link: null },
+          { id: 'd1_3b', order: '3B)', name: 'Bíceps Curl c/ Manc', series: '3X8-10', rir: 'RIR 1-0', pesoRef: '14 kg', notas: 'Ejercicio que te guste de bíceps. Recomendación: Bíceps en polea.', link: null },
+          { id: 'd1_3c', order: '3C)', name: 'Extensión de Tríceps Katana', series: '3X10-12', rir: 'RIR 1-0', pesoRef: '7.5 kg', notas: null, link: null },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'dia2',
+    label: 'DÍA 2',
+    groups: [
+      {
+        supersetId: '1',
+        exercises: [
+          { id: 'd2_1a', order: '1A)', name: 'Cuádriceps en Máquina', series: '3X8-12', rir: null, pesoRef: '52.5 kg', notas: null, link: 'https://www.youtube.com/watch?v=aE0EfiWQM8U' },
+        ]
+      },
+      {
+        supersetId: '2',
+        exercises: [
+          { id: 'd2_2a', order: '2A)', name: 'Pecho Plano con Barra', series: '3X6/8', rir: 'RIR 2', pesoRef: '20 kg', notas: null, link: null },
+          { id: 'd2_2b', order: '2B)', name: 'Jalón al Pecho', series: '3X8/10', rir: 'RIR 1-0', pesoRef: '35 kg', notas: null, link: null },
+        ]
+      },
+      {
+        supersetId: '3',
+        exercises: [
+          { id: 'd2_3a', order: '3A)', name: 'Bíceps Martillo c/ Polea', series: '3X8/12', rir: 'RIR 1-0', pesoRef: '21 kg aprox', notas: 'Podés hacerlo con mancuerna o con la cuerda en la polea.', link: null },
+          { id: 'd2_3b', order: '3B)', name: 'Extensión de Tríceps en Polea c/ Barra', series: '3X8/12', rir: null, pesoRef: '25 kg', notas: null, link: null },
+          { id: 'd2_3c', order: '3C)', name: 'Face Pull', series: '3X10-15', rir: 'RIR 1-0', pesoRef: '-', notas: null, link: null },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'dia3',
+    label: 'DÍA 3',
+    groups: [
+      {
+        supersetId: '1',
+        exercises: [
+          { id: 'd3_1a', order: '1A)', name: 'RDL con Mancuernas + Gemelos', series: '3X6/8', rir: null, pesoRef: '18 kg', notas: 'Lo mismo que con sentadilla. Por ahora no me importa el peso. TÉCNICA. No fuerces el estiramiento, vas a ir cediendo de a poco.', link: null },
+          { id: 'd3_1b', order: '1B)', name: 'Abdominales en Banco Declinado', series: '3X8/12', rir: null, pesoRef: '10 kg', notas: null, link: null },
+        ]
+      },
+      {
+        supersetId: '2',
+        exercises: [
+          { id: 'd3_3a', order: '2A)', name: 'Peck Deck', series: '3X8/10', rir: null, pesoRef: '67 kg', notas: null, link: null },
+          { id: 'd3_3b', order: '2B)', name: 'Remo en Polea Agarre Abierto', series: '3X6/10', rir: null, pesoRef: '25 kg', notas: null, link: null },
+        ]
+      },
+      {
+        supersetId: '3',
+        exercises: [
+          { id: 'd3_4a', order: '3A)', name: 'Press de Hombro c/ Mancuernas', series: '3X8/10', rir: 'RIR 2', pesoRef: '18 kg', notas: null, link: null },
+          { id: 'd3_4b', order: '3B)', name: 'Curl de Bíceps Scott', series: '3X8/12', rir: 'RIR 1-0', pesoRef: '-', notas: 'HOMBROS SIEMPRE POR DETRÁS DEL CUERPO.', link: null },
+          { id: 'd3_4c', order: '3C)', name: 'Patada de Tríceps con Polea', series: '3X8/12', rir: 'RIR 1-0', pesoRef: '-', notas: 'CODOS FIJOS.', link: null },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'dia4',
+    label: 'DÍA 4',
+    groups: [
+      {
+        supersetId: '1',
+        exercises: [
+          { id: 'd4_1a', order: '1A)', name: 'Camilla de Isquios', series: '3X8/10', rir: null, pesoRef: '45 kg aprox', notas: null, link: null },
+        ]
+      },
+      {
+        supersetId: '2',
+        exercises: [
+          { id: 'd4_2a', order: '2A)', name: 'Fondos en Paralelas', series: '3X6-8', rir: null, pesoRef: 'Peso corporal', notas: 'ESTE EJERCICIO ES CLAVE PARA EL PECHO Y LA SALUD DE TUS HOMBROS. Si necesitas, hacelo asistido con banda o libre.', link: null },
+          { id: 'd4_2b', order: '2B)', name: 'Dominadas Supinas', series: '3X6-8', rir: null, pesoRef: 'Peso corporal', notas: 'Lo mismo, si necesitas ayuda agarrá una goma.', link: null },
+        ]
+      },
+      {
+        supersetId: '3',
+        exercises: [
+          { id: 'd4_3a', order: '3A)', name: 'Curl de Bíceps Invertido', series: '3X8-10', rir: 'RIR 2', pesoRef: '-', notas: null, link: null },
+          { id: 'd4_3b', order: '3B)', name: 'Extensión de Tríceps en Polea', series: '3X10-12', rir: 'RIR 2-1', pesoRef: '-', notas: null, link: null },
+        ]
+      }
+    ]
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentDay = 0;
+let currentView = 'routine';
+// Storage key prefix
+const S = 'gym_';
+
+function getWeekKey(date = new Date()) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2,'0')}`;
+}
+
+function getWeekLabel(weekKey) {
+  const [year, wStr] = weekKey.split('-W');
+  const weekNum = parseInt(wStr);
+  // Get monday of that week
+  const jan4 = new Date(parseInt(year), 0, 4);
+  const dayOfWeek = (jan4.getDay() || 7) - 1;
+  const monday = new Date(jan4);
+  monday.setDate(jan4.getDate() - dayOfWeek + (weekNum - 1) * 7);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const fmt = (d) => d.toLocaleDateString('es-AR', { day: 'numeric', month: 'short' });
+  return `${fmt(monday)} – ${fmt(sunday)}`;
+}
+
+function getWeekNumber() {
+  return getWeekKey();
+}
+
+function loadLog(exerciseId, weekKey) {
+  try { return JSON.parse(localStorage.getItem(S + weekKey + '_' + exerciseId) || 'null'); } catch { return null; }
+}
+
+function saveLog(exerciseId, weekKey, data) {
+  localStorage.setItem(S + weekKey + '_' + exerciseId, JSON.stringify(data));
+}
+
+function getAllLogs() {
+  const logs = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k.startsWith(S)) continue;
+    const rest = k.slice(S.length); // e.g. "2025-W20_d1_1a"
+    const parts = rest.match(/^(\d{4}-W\d{2})_(.+)$/);
+    if (!parts) continue;
+    const [, weekKey, exId] = parts;
+    try {
+      const data = JSON.parse(localStorage.getItem(k));
+      if (data) logs.push({ weekKey, exId, data });
+    } catch {}
+  }
+  return logs.sort((a,b) => b.weekKey.localeCompare(a.weekKey));
+}
+
+function findExercise(exId) {
+  for (const day of ROUTINE) {
+    for (const grp of day.groups) {
+      for (const ex of grp.exercises) {
+        if (ex.id === exId) return { ex, day };
+      }
+    }
+  }
+  return null;
+}
+
+// ============================================================
+// RENDER ROUTINE
+// ============================================================
+function renderTabs() {
+  const container = document.getElementById('day-tabs');
+  container.innerHTML = ROUTINE.map((day, i) => `
+    <button class="day-tab ${i === currentDay ? 'active' : ''}" onclick="selectDay(${i})">${day.label}</button>
+  `).join('');
+}
+
+function renderDay() {
+  const day = ROUTINE[currentDay];
+  const weekKey = getWeekNumber();
+  let html = `
+    <div class="day-header">
+      <div class="day-title">${day.label.replace(' ','&nbsp;')}</div>
+      <div class="day-subtitle">${day.groups.reduce((a,g) => a + g.exercises.length, 0)} ejercicios • Semana ${weekKey.split('-W')[1]}</div>
+    </div>
+    <div class="rir-info-banner">
+      <p><strong>RIR</strong> = Repeticiones en el tanque. RIR 2 = te quedaban 2 reps. RIR 0 = al límite. <strong>Superseries</strong>: A y B van uno tras otro sin descanso.</p>
+    </div>
+  `;
+
+  for (const grp of day.groups) {
+    const isSingle = grp.exercises.length === 1;
+    html += `<div class="superset-group">`;
+    if (!isSingle) {
+      html += `<div class="superset-label">
+        <span class="superset-badge">SUPERSERIE ${grp.supersetId}</span>
+        <div class="superset-line"></div>
+      </div>`;
+    }
+    for (const ex of grp.exercises) {
+      html += renderExerciseCard(ex, weekKey);
+    }
+    html += `</div>`;
+  }
+
+  document.getElementById('routine-content').innerHTML = html;
+  updateWeekBadge();
+}
+
+function renderExerciseCard(ex, weekKey) {
+  const log = loadLog(ex.id, weekKey);
+  const numSeries = log ? log.length : 3;
+  
+  let seriesRows = '';
+  for (let s = 0; s < numSeries; s++) {
+    const entry = log ? log[s] : null;
+    seriesRows += `
+      <div class="series-row" id="row_${ex.id}_${s}">
+        <span class="series-label">${s+1}</span>
+        <div class="series-input-wrap">
+          <input type="number" inputmode="numeric" placeholder="—" value="${entry?.reps || ''}" 
+            id="reps_${ex.id}_${s}" onchange="autoSave('${ex.id}','${weekKey}')" />
+        </div>
+        <div class="series-input-wrap">
+          <input type="number" inputmode="numeric" placeholder="—" value="${entry?.peso || ''}" 
+            id="peso_${ex.id}_${s}" onchange="autoSave('${ex.id}','${weekKey}')" />
+        </div>
+        <div class="series-input-wrap">
+          <input type="number" inputmode="numeric" placeholder="—" value="${entry?.rir_real || ''}" 
+            id="rir_${ex.id}_${s}" onchange="autoSave('${ex.id}','${weekKey}')" />
+        </div>
+      </div>
+    `;
+  }
+
+  const linkHtml = ex.link ? `<a href="${ex.link}" target="_blank" class="link-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="red"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+    Ver video en YouTube
+  </a>` : '';
+
+  return `
+    <div class="exercise-card" id="card_${ex.id}">
+      <div class="exercise-header" onclick="toggleCard('${ex.id}')">
+        <div class="order-badge">${ex.order}</div>
+        <div class="exercise-info">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-meta">
+            <span class="meta-chip reps">${ex.series}</span>
+            ${ex.rir ? `<span class="meta-chip rir">${ex.rir}</span>` : ''}
+            ${ex.pesoRef && ex.pesoRef !== '-' ? `<span class="meta-chip peso">Ref: ${ex.pesoRef}</span>` : ''}
+          </div>
+        </div>
+        <div class="expand-btn">▾</div>
+      </div>
+      <div class="exercise-body">
+        ${ex.notas ? `<div class="notes-box">📝 ${ex.notas}</div>` : ''}
+        ${linkHtml}
+        <div class="log-section-title">Registro de hoy</div>
+        <div class="series-headers">
+          <span></span>
+          <span>REPS</span>
+          <span>PESO (kg)</span>
+          <span>RIR</span>
+        </div>
+        <div id="series_${ex.id}">
+          ${seriesRows}
+        </div>
+        <button class="add-serie-btn" onclick="addSerie('${ex.id}','${weekKey}')">+ Agregar serie</button>
+        <button class="save-btn" id="savebtn_${ex.id}" onclick="saveExercise('${ex.id}','${weekKey}')">
+          ${log ? '✓ Guardado' : 'Guardar registro'}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleCard(exId) {
+  const card = document.getElementById('card_' + exId);
+  card.classList.toggle('expanded');
+}
+
+function addSerie(exId, weekKey) {
+  const container = document.getElementById('series_' + exId);
+  const rows = container.querySelectorAll('.series-row');
+  const s = rows.length;
+  const div = document.createElement('div');
+  div.className = 'series-row';
+  div.id = `row_${exId}_${s}`;
+  div.innerHTML = `
+    <span class="series-label">${s+1}</span>
+    <div class="series-input-wrap">
+      <input type="number" inputmode="numeric" placeholder="—" id="reps_${exId}_${s}" onchange="autoSave('${exId}','${weekKey}')" />
+    </div>
+    <div class="series-input-wrap">
+      <input type="number" inputmode="numeric" placeholder="—" id="peso_${exId}_${s}" onchange="autoSave('${exId}','${weekKey}')" />
+    </div>
+    <div class="series-input-wrap">
+      <input type="number" inputmode="numeric" placeholder="—" id="rir_${exId}_${s}" onchange="autoSave('${exId}','${weekKey}')" />
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function autoSave(exId, weekKey) {
+  const container = document.getElementById('series_' + exId);
+  if (!container) return;
+  const rows = container.querySelectorAll('.series-row');
+  const data = [];
+  rows.forEach((_, i) => {
+    const reps = document.getElementById(`reps_${exId}_${i}`)?.value;
+    const peso = document.getElementById(`peso_${exId}_${i}`)?.value;
+    const rir_real = document.getElementById(`rir_${exId}_${i}`)?.value;
+    if (reps || peso || rir_real) data.push({ reps, peso, rir_real });
+  });
+  if (data.length) {
+    saveLog(exId, weekKey, data);
+    const btn = document.getElementById('savebtn_' + exId);
+    if (btn) { btn.textContent = '✓ Guardado'; btn.classList.add('saved'); }
+  }
+}
+
+function saveExercise(exId, weekKey) {
+  autoSave(exId, weekKey);
+  showToast('¡Registro guardado! 💪');
+}
+
+// ============================================================
+// HISTORY VIEW
+// ============================================================
+function renderHistory() {
+  const logs = getAllLogs();
+  const container = document.getElementById('history-content');
+  
+  if (!logs.length) {
+    container.innerHTML = `<div class="empty-history">
+      <div class="icon">📋</div>
+      <p>Aún no hay registros.<br>¡Empezá a entrenar y guardar tus series!</p>
+    </div>`;
+    return;
+  }
+
+  // Group by week
+  const byWeek = {};
+  for (const log of logs) {
+    if (!byWeek[log.weekKey]) byWeek[log.weekKey] = [];
+    byWeek[log.weekKey].push(log);
+  }
+
+  let html = '';
+  for (const [weekKey, entries] of Object.entries(byWeek)) {
+    html += `<div class="week-group">
+      <div class="week-group-header">
+        <div>
+          <div class="week-group-title">Semana ${weekKey.split('-W')[1]} · ${weekKey.split('-W')[0]}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${getWeekLabel(weekKey)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="week-group-count">${entries.length} ejercicios</span>
+          <button class="delete-week-btn" onclick="deleteWeek('${weekKey}')">Borrar</button>
+        </div>
+      </div>`;
+
+    for (const { exId, data } of entries) {
+      const found = findExercise(exId);
+      if (!found) continue;
+      const { ex, day } = found;
+      html += `<div class="history-entry">
+        <div class="history-entry-header">
+          <div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:2px">${day.label} · ${ex.order}</div>
+            <div class="history-exercise-name">${ex.name}</div>
+          </div>
+        </div>
+        <div class="history-stats">`;
+      
+      data.forEach((s, i) => {
+        if (s.reps || s.peso) {
+          html += `<div class="history-stat">S${i+1}: <span>${s.reps || '?'} reps</span>${s.peso ? ` · <span>${s.peso}kg</span>` : ''}${s.rir_real !== undefined && s.rir_real !== '' ? ` · <span>RIR ${s.rir_real}</span>` : ''}</div>`;
+        }
+      });
+      html += `</div></div>`;
+    }
+    html += `</div>`;
+  }
+  container.innerHTML = html;
+}
+
+function deleteWeek(weekKey) {
+  if (!confirm(`¿Borrar registro de la semana ${weekKey.split('-W')[1]}?`)) return;
+  const toDelete = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(S + weekKey)) toDelete.push(k);
+  }
+  toDelete.forEach(k => localStorage.removeItem(k));
+  renderHistory();
+  showToast('Semana borrada');
+}
+
+// ============================================================
+// STATS VIEW
+// ============================================================
+function renderStats() {
+  const logs = getAllLogs();
+  const totalSets = logs.reduce((a, l) => a + (l.data?.length || 0), 0);
+  const totalExercises = logs.length;
+  
+  // Weeks active
+  const weeks = new Set(logs.map(l => l.weekKey));
+  
+  // Most logged exercise
+  const exCount = {};
+  for (const l of logs) { exCount[l.exId] = (exCount[l.exId] || 0) + 1; }
+  const topExId = Object.entries(exCount).sort((a,b) => b[1]-a[1])[0];
+  const topEx = topExId ? findExercise(topExId[0]) : null;
+
+  // Days logged per week (current week)
+  const curWeek = getWeekNumber();
+  const curWeekLogs = logs.filter(l => l.weekKey === curWeek);
+  const daysThisWeek = new Set(curWeekLogs.map(l => l.exId.split('_')[0])).size;
+
+  const container = document.getElementById('stats-content');
+  
+  if (!totalExercises) {
+    container.innerHTML = `<div class="empty-history"><div class="icon">📊</div><p>Aún no hay datos. ¡Empezá a registrar tus entrenamientos!</p></div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-card-title">SEMANAS ACTIVAS</div>
+        <div class="stat-card-value">${weeks.size}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-title">TOTAL SERIES</div>
+        <div class="stat-card-value">${totalSets}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-title">EJERCICIOS REGISTRADOS</div>
+      <div class="stat-card-value">${totalExercises}</div>
+      <div class="stat-card-sub">En ${weeks.size} semana${weeks.size !== 1 ? 's' : ''}</div>
+    </div>
+    ${topEx ? `<div class="stat-card">
+      <div class="stat-card-title">EJERCICIO MÁS ENTRENADO</div>
+      <div style="font-size:18px;font-weight:700;margin-top:4px;color:var(--accent)">${topEx.ex.name}</div>
+      <div class="stat-card-sub">${topExId[1]} sesión${topExId[1] !== 1 ? 'es' : ''} registradas</div>
+    </div>` : ''}
+    <div class="stat-card">
+      <div class="stat-card-title">DÍAS ENTRENADOS ESTA SEMANA</div>
+      <div class="stat-card-value">${daysThisWeek} / 4</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:${(daysThisWeek/4)*100}%"></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function selectDay(i) {
+  currentDay = i;
+  renderTabs();
+  renderDay();
+}
+
+function switchView(view, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  btn.classList.add('active');
+  currentView = view;
+  if (view === 'history') renderHistory();
+  if (view === 'stats') renderStats();
+}
+
+function updateWeekBadge() {
+  const wk = getWeekNumber();
+  document.getElementById('week-badge').innerHTML = `Semana <strong>${wk.split('-W')[1]}</strong>`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderTabs();
+renderDay();
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
